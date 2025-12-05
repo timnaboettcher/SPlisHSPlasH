@@ -213,6 +213,32 @@ void SceneLoader::readMaterialParameterObject(const std::string& key, SPH::NonPr
 	}
 }
 
+void SceneLoader::readMaterialParameterObject(const std::string& key, const std::string& material_name, ParameterObject* paramObj)
+{
+	if (paramObj == nullptr)
+		return;
+
+	if (m_jsonData.find("Materials") != m_jsonData.end())
+	{
+		nlohmann::json& materials = m_jsonData["Materials"];
+		for (auto& material : materials)
+		{
+			string id = "";
+			readValue(material["id"], id);
+
+			if (key == id)
+			{
+				if (material.find(material_name) != material.end())
+				{
+					nlohmann::json& material_section = material[material_name];
+					if (!material_section.is_null())
+						readParameterObject(material_section, paramObj);
+				}
+			}
+		}
+	}
+}
+
 void SceneLoader::readParameterObject(const std::string& key, ParameterObject* paramObj)
 {
 	if (paramObj == nullptr)

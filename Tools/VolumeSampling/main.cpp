@@ -301,13 +301,19 @@ int main(int argc, char **argv)
  	int counter_y = 0;
  	Real xshift = diameter;
  	Real yshift = diameter;
- 
- 	if ((mode == 1) || (mode == 4))
- 		yshift = sqrt(static_cast<Real>(3.0)) * radius;
+
+	if ((mode == 1) || (mode == 4))
+	{
+		diameter *= static_cast<Real>(1.106);
+		radius = static_cast<Real>(0.5) * diameter;
+		yshift = sqrt(static_cast<Real>(6.0)) * diameter / static_cast<Real>(3.0);
+	}
  	else if (mode == 2)
  	{
- 		xshift = sqrt(static_cast<Real>(3.0)) * radius;
- 		yshift = sqrt(static_cast<Real>(6.0)) * diameter / static_cast<Real>(3.0);
+		diameter *= static_cast<Real>(1.121);
+		radius = static_cast<Real>(0.5) * diameter;
+ 		xshift = static_cast<Real>(1.2) * sqrt(static_cast<Real>(3.0)) * radius;
+ 		yshift = static_cast<Real>(1.2) * sqrt(static_cast<Real>(6.0)) * diameter / static_cast<Real>(3.0);
  	}
  	for (Real z = bbmin[2]; z <= bbmax[2]; z += diameter)
  	{

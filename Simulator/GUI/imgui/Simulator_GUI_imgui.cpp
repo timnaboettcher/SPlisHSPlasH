@@ -439,7 +439,6 @@ void Simulator_GUI_imgui::initSimulationParameterGUI()
 					m_colorFieldNames[idx] = fieldName;
 					if (field.methodName != "") 
 						fieldName = fieldName + " (" + field.methodName + ")";
-
 					param->items.push_back(fieldName);
 					idx++;
 				}
@@ -510,6 +509,8 @@ void Simulator_GUI_imgui::initSimulationParameterGUI()
 		}
 
 		imguiParameters::createParameterObjectGUI(model);
+		GenParam::ParameterObject* modelParameters = sim->getTimeStep()->getMaterialObject(m_currentFluidModel);
+		if (modelParameters != nullptr) imguiParameters::createParameterObjectGUI(modelParameters);
 		imguiParameters::createParameterObjectGUI((GenParam::ParameterObject*) model->getXSPH());
 		imguiParameters::createParameterObjectGUI((GenParam::ParameterObject*) model->getDragBase());
 		imguiParameters::createParameterObjectGUI((GenParam::ParameterObject*) model->getSurfaceTensionBase());

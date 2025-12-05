@@ -31,7 +31,7 @@ namespace SPH
 
 		/** Determine densities of all fluid particles.
 		*/
-		void computeDensities(const unsigned int fluidModelIndex);
+		virtual void computeDensities(const unsigned int fluidModelIndex);
 
 		/** returns the name of the method */
 		virtual std::string getMethodName() = 0;
@@ -40,6 +40,12 @@ namespace SPH
 
 		virtual void init();
 		virtual void resize() = 0;
+		/** This function is called after the simulation scene is loaded and all
+		* parameters are initialized. While reading a scene file several parameters
+		* can change. The deferred init function should initialize all values which
+		* depend on these parameters.
+		*/
+		virtual void deferredInit() {};
 
 		virtual void emittedParticles(FluidModel *model, const unsigned int startIndex) {};
 
@@ -52,6 +58,9 @@ namespace SPH
 		virtual void loadState(BinaryFileReader &binReader) {};
 
 		virtual int getNumIterations() = 0;
+
+		/** Can be overwritten by time step methods that assign fluid model parameters. */
+		virtual GenParam::ParameterObject* getMaterialObject(const unsigned int fluidModelIndex) { return nullptr; }
 
 #ifdef USE_PERFORMANCE_OPTIMIZATION
 		void precomputeValues();

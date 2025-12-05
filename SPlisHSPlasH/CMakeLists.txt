@@ -68,7 +68,23 @@ set(ICSPH_HEADER_FILES
 set(ICSPH_SOURCE_FILES
 	ICSPH/SimulationDataICSPH.cpp
 	ICSPH/TimeStepICSPH.cpp
-	)	
+	)			
+	
+set(PIISPH_HEADER_FILES
+	PIISPH/SimulationDataPIISPH.h
+	PIISPH/TimeStepPIISPH.h
+	PIISPH/Viscosity_PIISPH.h
+	PIISPH/Elasticity_PIISPH.h
+	PIISPH/Coupling_PIISPH.h
+	)
+	
+set(PIISPH_SOURCE_FILES
+	PIISPH/SimulationDataPIISPH.cpp
+	PIISPH/TimeStepPIISPH.cpp
+	PIISPH/Viscosity_PIISPH.cpp
+	PIISPH/Elasticity_PIISPH.cpp
+	PIISPH/Coupling_PIISPH.cpp
+	)
 	
 set(SURFACETENSION_HEADER_FILES
 	SurfaceTension/SurfaceTension_Becker2007.h
@@ -249,6 +265,9 @@ add_library(SPlisHSPlasH
 	${ICSPH_HEADER_FILES}
 	${ICSPH_SOURCE_FILES}
 	
+	${PIISPH_HEADER_FILES}
+	${PIISPH_SOURCE_FILES}
+	
 	${VISCOSITY_HEADER_FILES}
 	${VISCOSITY_SOURCE_FILES}
 	
@@ -305,6 +324,8 @@ source_group("Header Files\\PF" FILES ${PF_HEADER_FILES})
 source_group("Source Files\\PF" FILES ${PF_SOURCE_FILES})
 source_group("Header Files\\ICSPH" FILES ${ICSPH_HEADER_FILES})
 source_group("Source Files\\ICSPH" FILES ${ICSPH_SOURCE_FILES})
+source_group("Header Files\\PIISPH" FILES ${PIISPH_HEADER_FILES})
+source_group("Source Files\\PIISPH" FILES ${PIISPH_SOURCE_FILES})
 source_group("Header Files\\Viscosity" FILES ${VISCOSITY_HEADER_FILES})
 source_group("Source Files\\Viscosity" FILES ${VISCOSITY_SOURCE_FILES})
 source_group("Header Files\\SurfaceTension" FILES ${SURFACETENSION_HEADER_FILES})

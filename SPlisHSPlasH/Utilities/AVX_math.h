@@ -181,6 +181,31 @@ static inline Scalarf8 blend(Scalarf8 const & c, Scalarf8 const & a, Scalarf8 co
 	return _mm256_blendv_ps(b.v, a.v, c.v);
 }
 
+/** Returns a Scalarf8 with count ones and the rest is set to zero. */
+static inline Scalarf8 ones_zero(const unsigned char count = 8u)
+{
+	Scalarf8 v;
+	switch (count)
+	{
+	case 1u:
+		v.v = _mm256_setr_ps(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f); break;
+	case 2u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f); break;
+	case 3u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f); break;
+	case 4u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f); break;
+	case 5u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f); break;
+	case 6u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f); break;
+	case 7u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f); break;
+	case 8u:
+		v.v = _mm256_setr_ps(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f); break;
+	}
+	return v;
+}
 
 static inline Scalarf8 convert_zero(const unsigned int *idx, const Real *x, const unsigned char count = 8u)
 {

@@ -568,6 +568,9 @@ void SimulatorBase::deferredInit()
 				getSceneLoader()->readMaterialParameterObject(model->getId(), (NonPressureForceBase*)model->getVorticityBase());
 			if (model->getElasticityBase())
 				getSceneLoader()->readMaterialParameterObject(model->getId(), (NonPressureForceBase*)model->getElasticityBase());
+
+			GenParam::ParameterObject* modelParameters = sim->getTimeStep()->getMaterialObject(i);
+			if (modelParameters != nullptr) getSceneLoader()->readMaterialParameterObject(model->getId(), sim->getTimeStep()->getMethodName(), modelParameters);
 		}
 		getSceneLoader()->readTimeStepParameterObject("Configuration", Simulation::getCurrent()->getTimeStep());
 		m_gui->initSimulationParameterGUI();
@@ -675,6 +678,9 @@ void SimulatorBase::readParameters()
 				setVisible(i, material->visible);
 			}
 		}
+
+		GenParam::ParameterObject* modelParameters = sim->getTimeStep()->getMaterialObject(i);
+		if (modelParameters != nullptr) getSceneLoader()->readMaterialParameterObject(model->getId(), modelParameters);
 	}
 }
 
@@ -1421,17 +1427,24 @@ void SimulatorBase::createFluidBlocks(std::map<std::string, unsigned int> &fluid
 	for (unsigned int i = 0; i < scene.fluidBlocks.size(); i++)
 	{
 		const unsigned int fluidIndex = fluidIDs[scene.fluidBlocks[i]->id];
-		const Real diam = static_cast<Real>(2.0)*scene.particleRadius;
+		Real radius = scene.particleRadius;
+		Real diam = static_cast<Real>(2.0)*radius;
 
 		Real xshift = diam;
 		Real yshift = diam;
 		const Real eps = static_cast<Real>(1.0e-9);
 		if (scene.fluidBlocks[i]->mode == 1)
-			yshift = sqrt(static_cast<Real>(3.0)) * scene.particleRadius + eps;
+		{
+			diam *= static_cast<Real>(1.106);
+			radius = static_cast<Real>(0.5) * diam;
+			yshift = sqrt(static_cast<Real>(6.0)) * diam / static_cast<Real>(3.0) + eps;
+		}
 		else if (scene.fluidBlocks[i]->mode == 2)
 		{
+			diam *= static_cast<Real>(1.121);
+			radius = static_cast<Real>(0.5) * diam;
 			xshift = sqrt(static_cast<Real>(6.0)) * diam / static_cast<Real>(3.0) + eps;
-			yshift = sqrt(static_cast<Real>(3.0)) * scene.particleRadius + eps;
+			yshift = sqrt(static_cast<Real>(3.0)) * radius + eps;
 		}
 
 		// apply transformation
@@ -1453,7 +1466,7 @@ void SimulatorBase::createFluidBlocks(std::map<std::string, unsigned int> &fluid
 		const int stepsY = (int)round(diff[1] / yshift) - 1;
 		int stepsZ = (int)round(diff[2] / diam) - 1;
 
-		Vector3r start = minX + static_cast<Real>(2.0)*scene.particleRadius*Vector3r::Ones();
+		Vector3r start = minX + static_cast<Real>(2.0)*radius*Vector3r::Ones();
 		const unsigned int startIndex = (unsigned int)fluidParticles[fluidIndex].size();
 
 		if ((stepsX <= 1) || (stepsY <= 1) || (stepsZ <= 1))
@@ -1484,13 +1497,13 @@ void SimulatorBase::createFluidBlocks(std::map<std::string, unsigned int> &fluid
 					if (scene.fluidBlocks[i]->mode == 1)
 					{
 						if (k % 2 == 0)
-							currPos += Vector3r(0, 0, scene.particleRadius);
+							currPos += Vector3r(0, 0, radius);
 						else
-							currPos += Vector3r(scene.particleRadius, 0, 0);
+							currPos += Vector3r(radius, 0, 0);
 					}
 					else if (scene.fluidBlocks[i]->mode == 2)
 					{
-						currPos += Vector3r(0, 0, scene.particleRadius);
+						currPos += Vector3r(0, 0, radius);
 
 						Vector3r shift_vec(0, 0, 0);
 						if ((j % 2) && !Simulation::getCurrent()->is2DSimulation())

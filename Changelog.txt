@@ -1,3 +1,7 @@
+	- added implementation of porous flow method: Boettcher et al., "Implicit Incompressible Porous Flow using SPH", ACM Transaction on Graphics, 2025
+	- removed initial scaling of particles to 0.8 of the sampling volume
+	- updated denser sampling methods to account for removed particle downscaling
+	
 2.16.0
 	- added implementation of turbulence method: Liu et al., "Turbulent Details Simulation for SPH Fluids via Vorticity Refinement", Computer Graphics Forum, 2021
 	- Scene files now have a namespace for each pressure and non-pressure solver. This means existing scene files have to be adapted (see doc/file_format.md).

@@ -31,7 +31,7 @@ void SPHVolumeSampling::generateSamples()
 	const Real oldRadius = m_radius;
 
 	// use smaller radius for sampling to generate more particles		
-	m_radius = static_cast<Real>(0.95) * m_radius;
+	m_radius = static_cast<Real>(1.0) * m_radius;
 	m_diameter = static_cast<Real>(2.0) * m_radius;
 	sampleObject(1);
 	m_radius = oldRadius;

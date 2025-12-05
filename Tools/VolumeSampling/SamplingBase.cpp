@@ -189,9 +189,6 @@ void SamplingBase::writeParticlesVTK(const std::string& fileName, std::vector<Ve
 void SamplingBase::sampleObject(const int mode)
 {
 	// sample object
-	const unsigned int numberOfSamplePoints = (((unsigned int)((1.0f / m_diameter) * (m_bbmax[2] - m_bbmin[2]))) + 1) *
-		(((unsigned int)((1.0f / m_diameter) * (m_bbmax[1] - m_bbmin[1]))) + 1) *
-		(((unsigned int)((1.0f / m_diameter) * (m_bbmax[0] - m_bbmin[0]))) + 1);
 	unsigned int currentSample = 0;
 	Real currentPercent = 0.01;
 	int counter_x = 0;
@@ -199,14 +196,28 @@ void SamplingBase::sampleObject(const int mode)
 	Real xshift = m_diameter;
 	Real yshift = m_diameter;
 
+	Real diam = m_diameter;
+	Real radius = m_radius;
+
 	if (mode == 1)
-		yshift = sqrt(static_cast<Real>(3.0)) * m_radius;
+	{
+		diam *= static_cast<Real>(1.106);
+		radius = static_cast<Real>(0.5) * diam;
+		yshift = sqrt(static_cast<Real>(6.0)) * diam / static_cast<Real>(3.0);
+	}
 	else if (mode == 2)
 	{
-		xshift = sqrt(static_cast<Real>(3.0)) * m_radius;
-		yshift = sqrt(static_cast<Real>(6.0)) * m_diameter / static_cast<Real>(3.0);
+		diam *= static_cast<Real>(1.121);
+		radius = static_cast<Real>(0.5) * diam;
+		xshift = sqrt(static_cast<Real>(3.0)) * radius;
+		yshift = sqrt(static_cast<Real>(6.0)) * diam / static_cast<Real>(3.0);
 	}
-	for (Real z = m_bbmin[2]; z <= m_bbmax[2]; z += m_diameter)
+
+	const unsigned int numberOfSamplePoints = (((unsigned int)((1.0f / diam) * (m_bbmax[2] - m_bbmin[2]))) + 1) *
+		(((unsigned int)((1.0f / diam) * (m_bbmax[1] - m_bbmin[1]))) + 1) *
+		(((unsigned int)((1.0f / diam) * (m_bbmax[0] - m_bbmin[0]))) + 1);
+
+	for (Real z = m_bbmin[2]; z <= m_bbmax[2]; z += diam)
 	{
 		for (Real y = m_bbmin[1]; y <= m_bbmax[1]; y += yshift)
 		{
@@ -216,23 +227,23 @@ void SamplingBase::sampleObject(const int mode)
 				if (mode == 1)
 				{
 					if (counter_y % 2 == 0)
-						particlePosition = Vector3r(x, y + m_radius, z + m_radius);
+						particlePosition = Vector3r(x, y + radius, z + radius);
 					else
-						particlePosition = Vector3r(x + m_radius, y + m_radius, z);
+						particlePosition = Vector3r(x + radius, y + radius, z);
 				}
 				else if (mode == 2)
 				{
-					particlePosition = Vector3r(x, y + m_radius, z + m_radius);
+					particlePosition = Vector3r(x, y + radius, z + radius);
 
 					Vector3r shift_vec(0, 0, 0);
 					if (counter_x % 2)
 					{
-						shift_vec[2] += m_diameter / (static_cast<Real>(2.0) * (counter_y % 2 ? -1 : 1));
+						shift_vec[2] += diam / (static_cast<Real>(2.0) * (counter_y % 2 ? -1 : 1));
 					}
 					if (counter_y % 2)
 					{
 						shift_vec[0] += xshift / static_cast<Real>(2.0);
-						shift_vec[2] += m_diameter / static_cast<Real>(2.0);
+						shift_vec[2] += diam / static_cast<Real>(2.0);
 					}
 					particlePosition += shift_vec;
 				}

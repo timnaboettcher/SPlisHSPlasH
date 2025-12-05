@@ -1,0 +1,78 @@
+{
+	"Configuration": {
+		"particleRadius": 0.01,
+		"numberOfStepsPerRenderUpdate": 4,
+		"simulationMethod": 7,
+		"gravitation": [ 0, -9.81, 0 ],
+		"timeStepSize": 0.001,
+		"cflMethod": 0,
+		"particleAttributes": "density;velocity;saturation",
+		"boundaryHandlingMethod": 2,
+		"PIISPH": {
+			"minIterations": 2,
+			"maxIterations": 100,
+			"maxError": 0.05,
+			"drag": 5.0
+		}
+	},
+	"Materials": [
+		{
+			"id": "fluid",
+			"density0": 1000,
+			"viscosityMethod": 0,
+			"PIISPH": {
+				"viscosity": 0.02
+			}
+		},
+		{
+			"id": "solid",
+			"density0": 2000,
+			"viscosityMethod": 1,
+			"Standard viscosity": {
+				"viscosity": 0.01,
+				"viscosityBoundary": 0.1
+			},
+			"PIISPH": {
+				"isFluid": false,
+				"porosity": 0.6,
+				"youngsModulus": 250000.0,
+				"poissonsRatio": 0.33
+			}
+		}
+	],
+	"RigidBodies": [
+		{
+			"geometryFile": "../models/UnitBox.obj",
+			"translation": [ 0, 2.0, 0 ],
+			"rotationAxis": [ 1, 0, 0 ],
+			"rotationAngle": 0,
+			"scale": [ 1, 4, 1 ],
+			"color": [ 0.1, 0.4, 0.6, 1.0 ],
+			"isDynamic": false,
+			"isWall": true,
+			"mapInvert": true,
+			"mapThickness": 0.0, 
+			"mapResolution": [ 20, 80, 20 ]
+		}
+	],
+	"FluidBlocks": [
+		{
+			"id": "fluid",
+			"denseMode": 0,
+			"start": [ -0.49, 1.05, -0.49 ],
+			"end": [ 0.49, 2.05, 0.49 ],
+			"translation": [ 0.0, 0.01, 0.0 ],
+			"scale": [ 1, 1, 1 ]
+		},
+		{
+			"id": "solid",
+			"denseMode": 0,
+			"start": [ -0.49, 0.025, -0.49 ],
+			"end": [ 0.49, 1.025, 0.49 ],
+			"scale": [ 1, 1, 1 ]
+		}
+	]
+}
+
+
+

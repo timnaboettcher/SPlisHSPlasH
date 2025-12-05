@@ -10,6 +10,7 @@
 #include "SPlisHSPlasH/DFSPH/TimeStepDFSPH.h"
 #include "SPlisHSPlasH/PF/TimeStepPF.h"
 #include "SPlisHSPlasH/ICSPH/TimeStepICSPH.h"
+#include "SPlisHSPlasH/PIISPH/TimeStepPIISPH.h"
 #include "BoundaryModel_Akinci2012.h"
 #include "BoundaryModel_Bender2019.h"
 #include "BoundaryModel_Koschier2017.h"
@@ -56,6 +57,7 @@ int Simulation::ENUM_SIMULATION_IISPH = -1;
 int Simulation::ENUM_SIMULATION_DFSPH = -1;
 int Simulation::ENUM_SIMULATION_PF = -1;
 int Simulation::ENUM_SIMULATION_ICSPH = -1;
+int Simulation::ENUM_SIMULATION_PIISPH = -1;
 int Simulation::BOUNDARY_HANDLING_METHOD = -1;
 int Simulation::ENUM_AKINCI2012 = -1;
 int Simulation::ENUM_KOSCHIER2017 = -1;
@@ -158,6 +160,7 @@ void Simulation::deferredInit()
 		FluidModel* fm = getFluidModel(i);
 		fm->deferredInit();
 	}
+	m_timeStep->deferredInit();
 }
 
 void Simulation::initParameters()
@@ -265,6 +268,7 @@ void Simulation::initParameters()
 	enumParam->addEnumValue(TimeStepDFSPH::METHOD_NAME, ENUM_SIMULATION_DFSPH);
 	enumParam->addEnumValue(TimeStepPF::METHOD_NAME, ENUM_SIMULATION_PF);
 	enumParam->addEnumValue(TimeStepICSPH::METHOD_NAME, ENUM_SIMULATION_ICSPH);
+	enumParam->addEnumValue(TimeStepPIISPH::METHOD_NAME, ENUM_SIMULATION_PIISPH);
 
 	BOUNDARY_HANDLING_METHOD = createEnumParameter("boundaryHandlingMethod", "Boundary handling method", &m_boundaryHandlingMethod);
 	setGroup(BOUNDARY_HANDLING_METHOD, "Simulation|Simulation");
@@ -521,7 +525,7 @@ void Simulation::reset()
 	if (getBoundaryHandlingMethod() == BoundaryHandlingMethods::Akinci2012)
 		updateBoundaryVolume();
 
-	performNeighborhoodSearchSort();
+	//performNeighborhoodSearchSort();
 	if (m_timeStep)
 		m_timeStep->reset();
 
@@ -592,6 +596,13 @@ void Simulation::setSimulationMethod(const int val)
 	else if (method == SimulationMethods::ICSPH)
 	{
 		m_timeStep = new TimeStepICSPH();
+		m_timeStep->init();
+		setValue(Simulation::KERNEL_METHOD, Simulation::ENUM_KERNEL_CUBIC);
+		setValue(Simulation::GRAD_KERNEL_METHOD, Simulation::ENUM_GRADKERNEL_CUBIC);
+	}
+	else if (method == SimulationMethods::PIISPH)
+	{
+		m_timeStep = new TimeStepPIISPH();
 		m_timeStep->init();
 		setValue(Simulation::KERNEL_METHOD, Simulation::ENUM_KERNEL_CUBIC);
 		setValue(Simulation::GRAD_KERNEL_METHOD, Simulation::ENUM_GRADKERNEL_CUBIC);

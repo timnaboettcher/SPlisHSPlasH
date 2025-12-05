@@ -141,6 +141,7 @@ namespace Utilities
 		}
 
 		void readMaterialParameterObject(const std::string& key, GenParam::ParameterObject* paramObj);  // to be removed
+		void readMaterialParameterObject(const std::string& key, const std::string& mmaterial_name, GenParam::ParameterObject* paramObj);
 		void readMaterialParameterObject(const std::string& key, SPH::NonPressureForceBase* paramObj);
 		void readTimeStepParameterObject(const std::string& key, SPH::TimeStep* paramObj);
 		void readParameterObject(const std::string &key, GenParam::ParameterObject *paramObj);

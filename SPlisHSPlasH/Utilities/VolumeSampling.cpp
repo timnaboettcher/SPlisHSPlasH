@@ -27,12 +27,8 @@ void VolumeSampling::sampleMesh(const unsigned int numVertices, const Vector3r *
 
 	Discregrid::CubicLagrangeDiscreteGrid* sdf = SDFFunctions::generateSDF(numVertices, vertices, numFaces, faces, bbox, resolution, invert);
 
-	const Real diameter = static_cast<Real>(2.0) * radius;
-
-	// sample object
-	const unsigned int numberOfSamplePoints = (((unsigned int)((1.0f / diameter) * (bbox.max()[2] - bbox.min()[2]))) + 1) *
-		(((unsigned int)((1.0f / diameter) * (bbox.max()[1] - bbox.min()[1]))) + 1) *
-		(((unsigned int)((1.0f / diameter) * (bbox.max()[0] - bbox.min()[0]))) + 1);
+    Real diameter = static_cast<Real>(2.0) * radius;
+    Real r = radius;
 
 	unsigned int currentSample = 0;
  //	Real currentPercent = 0.0;
@@ -41,13 +37,25 @@ void VolumeSampling::sampleMesh(const unsigned int numVertices, const Vector3r *
  	Real xshift = diameter;
  	Real yshift = diameter;
  
- 	if (sampleMode == 1)
- 		yshift = sqrt(static_cast<Real>(3.0)) * radius;
+    if (sampleMode == 1)
+    {
+        diameter *= static_cast<Real>(1.106);
+        r = static_cast<Real>(0.5) * diameter;
+        yshift = sqrt(static_cast<Real>(6.0)) * diameter / static_cast<Real>(3.0);
+    }
  	else if (sampleMode == 2)
  	{
- 		xshift = sqrt(static_cast<Real>(3.0)) * radius;
+        diameter *= static_cast<Real>(1.121);
+        r = static_cast<Real>(0.5) * diameter;
+ 		xshift = sqrt(static_cast<Real>(3.0)) * r;
  		yshift = sqrt(static_cast<Real>(6.0)) * diameter / static_cast<Real>(3.0);
  	}
+
+    // sample object
+    const unsigned int numberOfSamplePoints = (((unsigned int)((1.0f / diameter) * (bbox.max()[2] - bbox.min()[2]))) + 1) *
+        (((unsigned int)((1.0f / diameter) * (bbox.max()[1] - bbox.min()[1]))) + 1) *
+        (((unsigned int)((1.0f / diameter) * (bbox.max()[0] - bbox.min()[0]))) + 1);
+
  	for (Real z = bbox.min()[2]; z <= bbox.max()[2]; z += diameter)
  	{
  		for (Real y = bbox.min()[1]; y <= bbox.max()[1]; y += yshift)
@@ -58,13 +66,13 @@ void VolumeSampling::sampleMesh(const unsigned int numVertices, const Vector3r *
  				if (sampleMode == 1)
  				{					
  					if (counter_y % 2 == 0)
- 						particlePosition = Vector3r(x, y + radius, z + radius);
+ 						particlePosition = Vector3r(x, y + r, z + r);
  					else
- 						particlePosition = Vector3r(x + radius, y + radius, z);
+ 						particlePosition = Vector3r(x + r, y + r, z);
  				}
  				else if (sampleMode == 2)
  				{
- 					particlePosition = Vector3r(x, y + radius, z + radius);
+ 					particlePosition = Vector3r(x, y + r, z + r);
  
  					Vector3r shift_vec(0, 0, 0);
  					if (counter_x % 2)
